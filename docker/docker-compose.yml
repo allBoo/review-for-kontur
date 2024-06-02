@@ -4,7 +4,7 @@ services:
   kafka:
     image: confluentinc/cp-kafka:latest
     hostname: kafka
-    container_name: kafka
+    container_name: mediabox-kafka
     ports:
       - "29092:9092"
       - "29101:9101"
@@ -32,6 +32,7 @@ services:
 
   kafdrop:
     image: obsidiandynamics/kafdrop
+    container_name: mediabox-kafdrop
     restart: "no"
     environment:
       KAFKA_BROKERCONNECT: "kafka:29092"
@@ -45,7 +46,7 @@ services:
   clickhouse:
     image: 'clickhouse/clickhouse-server:${CHVER:-latest}'
     user: '101:101'
-    container_name: clickhouse
+    container_name: mediabox-clickhouse
     hostname: clickhouse
     volumes:
       - ${PWD}/volumes/clickhouse/config.xml:/etc/clickhouse-server/config.d/config.xml
@@ -60,6 +61,7 @@ services:
     build:
       context: ../
     container_name: mediabox-events
+    hostname: events
     volumes:
       - "$DOCKER_MOUNT:/tmp/docker-mount/"
       - "../app:/var/www/app"

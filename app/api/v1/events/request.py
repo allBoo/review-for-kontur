@@ -49,6 +49,7 @@ class Event(BaseModel):
 class EventType(Enum):
     PLAY = "play"
     ERROR = "error"
+    PING = "ping"
 
 
 class ContentType(Enum):
