@@ -1,9 +1,11 @@
+from typing import Coroutine, Any, Callable
+
 from fastapi import FastAPI, Depends, HTTPException, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from fastapi.middleware.trustedhost import TrustedHostMiddleware
 
 
-def get_api_token_validator(api_token: str):
+def get_api_token_validator(api_token: str) -> Callable[..., Coroutine[Any, Any, str]]:
     async def check_auth_token(credentials: HTTPAuthorizationCredentials = Depends(HTTPBearer())):
         if credentials.scheme != "Bearer":
             raise HTTPException(
@@ -22,7 +24,7 @@ def get_api_token_validator(api_token: str):
     return check_auth_token
 
 
-def setup_allowed_hosts(app: FastAPI, hosts: list[str]):
+def setup_allowed_hosts(app: FastAPI, hosts: list[str]) -> None:
     if hosts:
         app.add_middleware(
             TrustedHostMiddleware, allowed_hosts=hosts

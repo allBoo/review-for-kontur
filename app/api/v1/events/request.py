@@ -2,7 +2,7 @@ from datetime import datetime, timezone
 from enum import Enum
 
 from pydantic import BaseModel, field_validator, Field, PrivateAttr
-from typing import Literal
+from typing import Literal, Any
 
 
 class DeviceMeta(BaseModel):
@@ -28,18 +28,18 @@ class Event(BaseModel):
     meta: DeviceMeta
 
     @property
-    def sent_timestamp(self):
+    def sent_timestamp(self) -> datetime:
         return self._sent_timestamp
 
     @field_validator('timestamp')
     @classmethod
-    def timestamp_add_tz(cls, timestamp: datetime):
+    def timestamp_add_tz(cls, timestamp: datetime) -> datetime:
         if timestamp.tzinfo is None:
             timestamp = timestamp.replace(tzinfo=timezone.utc)
 
         return timestamp
 
-    def model_dump(self, *args, **kwargs):
+    def model_dump(self, *args, **kwargs) -> dict[str, Any]:
         model_dict = super().model_dump(*args, **kwargs)
         model_dict["sent_timestamp"] = self._sent_timestamp
 
@@ -86,7 +86,6 @@ class EventRequest(Event):
     class Config:
         abstract = True
 
-    type: EventType
     content: ContentMeta
     playlist: PlaylistMeta
 

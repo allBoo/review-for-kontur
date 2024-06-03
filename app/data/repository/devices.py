@@ -10,10 +10,10 @@ class DevicesHistoryRepository:
     TODO: implement the actual history retrieval
     """
 
-    def __init__(self):
-        self._devices: dict[str, Device] = {}
+    def __init__(self) -> None:
+        self._devices: dict[str, Device | None] = {}
 
-    async def preload_devices(self):
+    async def preload_devices(self) -> None:
         devices = await DevicesNetworkDataSource.get_devices()
         for device in devices:
             self._devices[device.udid] = device

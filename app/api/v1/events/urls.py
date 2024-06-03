@@ -25,6 +25,7 @@ async def events(request: list[PlayEventRequest | ErrorEventRequest | PingReques
             case EventType.ERROR.value:
                 print(f"Error event: {event}")
             case EventType.PING.value:
+                assert isinstance(event, PingRequest)
                 _ = asyncio.create_task(ping(event))
 
     response = EventsResponse(status=Status.OK, message=str(request[2].model_dump()))

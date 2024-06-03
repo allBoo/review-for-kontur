@@ -15,5 +15,4 @@ class Event(BaseModel):
     type: str
     content_id: int
     timestamp: datetime
-    meta: dict
 
