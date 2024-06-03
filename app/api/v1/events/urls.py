@@ -1,32 +1,38 @@
-import asyncio
+import logging
+from fastapi import APIRouter
+from typing import Annotated
+from annotated_types import MaxLen
 
-from fastapi import APIRouter, Query, Response
-from typing import Annotated, Union
-
-from .request import PingRequest, EventRequest, PlayEventRequest, ErrorEventRequest, EventType
+from app.config import Config
+from app.service.factory import ServiceFactory
+from .request import PingRequest, PlayEventRequest, ErrorEventRequest
 from .response import EventsResponse, Status
 
 router = APIRouter()
 
+events_saver = ServiceFactory.get_raw_events_saver()
+logger = logging.getLogger(__name__)
+
 
 @router.post("/ping", tags=["events"])
 async def ping(request: PingRequest) -> EventsResponse:
-    print(f"Ping event: {request}")
-    response = EventsResponse(status=Status.OK)
+    try:
+        events_saver.save(request)
+        response = EventsResponse(status=Status.OK)
+    except Exception as e:
+        response = EventsResponse(status=Status.ERROR, message=str(e))
+
     return response
 
 
 @router.post("/events", tags=["events"])
-async def events(request: list[PlayEventRequest | ErrorEventRequest | PingRequest]) -> EventsResponse:
+async def events(
+    request: Annotated[list[PlayEventRequest | ErrorEventRequest | PingRequest],
+                       MaxLen(max_length=Config.INCOMING_EVENTS_LIMIT)]
+) -> EventsResponse:
+    logger.debug('Received events')
     for event in request:
-        match event.type:
-            case EventType.PLAY.value:
-                print(f"Play event: {event}")
-            case EventType.ERROR.value:
-                print(f"Error event: {event}")
-            case EventType.PING.value:
-                assert isinstance(event, PingRequest)
-                _ = asyncio.create_task(ping(event))
+        await events_saver.save(event)
 
-    response = EventsResponse(status=Status.OK, message=str(request[2].model_dump()))
+    response = EventsResponse(status=Status.OK)
     return response

@@ -4,8 +4,8 @@ from pydantic import BaseModel
 
 
 class Status(Enum):
-    OK = "OK"
-    ERROR = "ERROR"
+    OK = "ok"
+    ERROR = "error"
 
 
 class EventsResponse(BaseModel):

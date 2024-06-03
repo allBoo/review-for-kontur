@@ -1,9 +1,12 @@
+from logging.config import dictConfig
 from fastapi import FastAPI, Depends
 
+from .infrastructure.logs.config import LogConfig
 from .config import Config
 from .api.v1 import urls as v1
 from .api.security import get_api_token_validator, setup_allowed_hosts
 
+dictConfig(LogConfig(LOG_LEVEL="INFO").dict())
 
 app = FastAPI(
     title="Events API",

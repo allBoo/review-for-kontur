@@ -1,3 +1,5 @@
+from typing import Any
+
 from pydantic import BaseModel
 from datetime import datetime
 
@@ -15,4 +17,5 @@ class Event(BaseModel):
     type: str
     content_id: int
     timestamp: datetime
+
 
