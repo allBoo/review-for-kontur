@@ -1,5 +1,5 @@
-from app.service.api.client import ApiClient
-from ..models.response import DeviceResponse
+from app.data.source.network.models.response import DeviceResponse
+from app.infrastructure.api.client import ApiClient
 
 
 class DevicesApi:
@@ -14,6 +14,9 @@ class DevicesApi:
         Get top N last active devices from CMS API
         """
         devices = await self.client.get(f'{self._base_path}history?sort=last_activity&page-size={limit}')
+        assert devices is not None, 'Failed to get devices from CMS API'
+        assert isinstance(devices, list), 'Unexpected response from CMS API'
+
         return [DeviceResponse(**device) for device in devices]
 
     async def get_device_by_udid(self, udid: str) -> DeviceResponse | None:

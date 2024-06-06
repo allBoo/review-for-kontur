@@ -15,7 +15,12 @@ class KafkaConfig:
     KAFKA_SERVERS: str = os.environ.get('KAFKA_SERVERS', 'kafka:29092')
     KAFKA_RAW_EVENTS_TOPIC: str = os.environ.get('KAFKA_RAW_EVENTS_TOPIC', 'raw_events')
     KAFKA_RAW_EVENTS_CONSUMER_GROUP: str = os.environ.get('KAFKA_RAW_EVENTS_CONSUMER_GROUP', 'raw_events_group')
+    KAFKA_RAW_EVENTS_CONSUMER_GROUP_VERSION: str = os.environ.get('KAFKA_RAW_EVENTS_CONSUMER_GROUP_VERSION', '0')
     KAFKA_PRODUCER_FLUSH_INTERVAL: int = int(os.environ.get('KAFKA_PRODUCER_FLUSH_INTERVAL', 10))   # highly recommended to use higher value
+
+
+class ListenerConfig:
+    LISTENER_RESTART_TIMEOUT: int = int(os.environ.get('LISTENER_RESTART_TIMEOUT', 300))
 
 
 class Config(ExternalPortsConfig, ApiConfig, KafkaConfig):

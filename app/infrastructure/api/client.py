@@ -11,7 +11,7 @@ class ApiClient:
             **kwargs
         )
 
-    async def get(self, path: str) -> dict[str, Any]:
+    async def get(self, path: str) -> Any:
         async with self.client as client:
             response = await client.get(path)
         return response.json()

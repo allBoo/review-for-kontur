@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 @router.post("/ping", tags=["events"])
 async def ping(request: PingRequest) -> EventsResponse:
     try:
-        events_saver.save(request)
+        await events_saver.save(request)
         response = EventsResponse(status=Status.OK)
     except Exception as e:
         response = EventsResponse(status=Status.ERROR, message=str(e))

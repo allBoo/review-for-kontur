@@ -1,6 +1,6 @@
 import asyncio
 import logging
-from typing import Annotated
+from typing import Annotated, Self, AsyncGenerator
 
 from annotated_types import MinLen
 
@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 
 class RawEventsSaver:
     """
-    Implements the business logic for saving raw events in a fail-safe way.
+    Implements the business logic for saving raw events in a fail-safe way to the chain of storages.
     """
     def __init__(self, storages: Annotated[list[RawEventsDataSource], MinLen(min_length=1)]) -> None:
         self.storages = storages
@@ -33,3 +33,22 @@ class RawEventsSaver:
         c = storage.store_event(raw_event, on_failure=lambda event: self._save_fallback(event, fallback_storages))
         asyncio.ensure_future(c)
 
+
+class RawEventsReader:
+    """
+    Implements the business logic for reading raw events from any supported storage.
+    """
+    def __init__(self, storage: RawEventsDataSource) -> None:
+        self.reader = storage.get_reader()
+
+    def read_from(self, event_types: list[str]) -> Self:
+        self.reader.filter(event_types)
+        return self
+
+    async def read(self) -> AsyncGenerator[RawBaseEvent, None]:
+        while True:
+            event = await self.reader.read_one()
+            if not event:
+                continue
+
+            yield event
