@@ -1,17 +1,15 @@
-from logging.config import dictConfig
 import typer
+from fastapi_cli.cli import app as FastAPICLIApp
 
-from app.infrastructure.logs.config import LogConfig
-from app.ports.cli import listener, restore
-
-dictConfig(LogConfig(LOG_LEVEL="INFO").dict())
-
+from application import setup_app
+from application.ports.cli import listener
 
 app = typer.Typer(no_args_is_help=True)
 
+app.callback()(setup_app)
 listener.register(app)
-restore.register(app)
 
+app.add_typer(FastAPICLIApp, name='api')
 
 def run():
     app()

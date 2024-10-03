@@ -1,7 +1,18 @@
 
 fastapi
+fastapi[standard]
 pydantic
+pydantic-settings
 uvicorn
 httpx
 confluent-kafka
 typer
+mypy
+sentry-sdk
+yandexcloud
+sqlalchemy~=2.0
+psycopg2-binary~=2.9
+asyncpg~=0.29
+clickhouse-sqlalchemy~=0.3
+uuid
+motor
