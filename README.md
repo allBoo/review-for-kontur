@@ -1,4 +1,6 @@
-# Media Box Events API
+# MediaBox Events Service (WIP)
+
+The idea of the service is to handle different sources (API, RPC, DBs, etc) of different event data, described by schemas, enrich with additional data, calculate aggregates and to provide a unified API for the clients to handle the aggregated statistics.
 
 ## Configuration file
 
